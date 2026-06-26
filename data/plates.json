@@ -3,200 +3,134 @@
 
 "features":[
 
-
 {
 "type":"Feature",
-
 "properties":{
-
 "name":"太平洋プレート",
-
 "english":"Pacific Plate",
-
 "type":"Oceanic Plate"
-
 },
-
 "geometry":{
-
 "type":"Polygon",
-
-"coordinates":[[
-
+"coordinates":[
+[
 [120,60],
 [150,60],
-[180,30],
+[180,45],
+[170,0],
 [160,-60],
 [120,-60],
-[100,0],
+[100,-10],
 [120,60]
-
-]]
-
+]
+]
 }
-
 },
-
 
 
 {
 "type":"Feature",
-
 "properties":{
-
 "name":"ユーラシアプレート",
-
 "english":"Eurasian Plate",
-
 "type":"Continental Plate"
-
 },
-
 "geometry":{
-
 "type":"Polygon",
-
-"coordinates":[[
-
-[-10,70],
-[180,70],
+"coordinates":[
+[
+[-10,75],
+[180,75],
+[160,35],
 [120,20],
-[60,5],
-[-10,35],
-[-10,70]
-
-]]
-
+[70,5],
+[30,25],
+[-10,40],
+[-10,75]
+]
+]
 }
-
 },
-
 
 
 {
 "type":"Feature",
-
 "properties":{
-
 "name":"北アメリカプレート",
-
 "english":"North American Plate",
-
 "type":"Continental Plate"
-
 },
-
 "geometry":{
-
 "type":"Polygon",
-
 "coordinates":[
-
 [
 [-170,75],
 [-50,75],
-[-60,10],
-[-140,5],
+[-50,10],
+[-100,5],
+[-150,20],
 [-170,75]
 ]
-
 ]
-
 }
-
 },
-
 
 
 {
 "type":"Feature",
-
 "properties":{
-
 "name":"アフリカプレート",
-
 "english":"African Plate",
-
 "type":"Continental Plate"
-
 },
-
 "geometry":{
-
 "type":"Polygon",
-
 "coordinates":[
-
 [
-[-20,35],
-[55,35],
-[55,-40],
-[-20,-40],
-[-20,35]
+[-20,37],
+[55,37],
+[55,-35],
+[20,-45],
+[-20,-30],
+[-20,37]
 ]
-
 ]
-
 }
-
 },
-
 
 
 {
 "type":"Feature",
-
 "properties":{
-
 "name":"南アメリカプレート",
-
 "english":"South American Plate",
-
 "type":"Continental Plate"
-
 },
-
 "geometry":{
-
 "type":"Polygon",
-
 "coordinates":[
-
 [
 [-90,15],
 [-30,10],
-[-35,-60],
+[-35,-55],
 [-80,-55],
 [-90,15]
 ]
-
 ]
-
 }
-
 },
-
 
 
 {
 "type":"Feature",
-
 "properties":{
-
 "name":"南極プレート",
-
 "english":"Antarctic Plate",
-
 "type":"Polar Plate"
-
 },
-
 "geometry":{
-
 "type":"Polygon",
-
 "coordinates":[
-
 [
 [-180,-55],
 [180,-55],
@@ -204,49 +138,31 @@
 [-180,-90],
 [-180,-55]
 ]
-
 ]
-
 }
-
 },
-
 
 
 {
 "type":"Feature",
-
 "properties":{
-
 "name":"インド・オーストラリアプレート",
-
 "english":"Indo-Australian Plate",
-
 "type":"Continental/Oceanic Plate"
-
 },
-
 "geometry":{
-
 "type":"Polygon",
-
 "coordinates":[
-
 [
-40,30],
-150,30,
-160,-50,
-40,-50,
-40,30
+[40,30],
+[150,30],
+[160,-50],
+[40,-50],
+[40,30]
 ]
-
 ]
-
+}
 }
 
-}
-
-
 ]
-
 }
