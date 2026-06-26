@@ -4,7 +4,9 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
 
 <title>QuakeEarth</title>
 
@@ -15,12 +17,11 @@ href="https://unpkg.com/leaflet/dist/leaflet.css">
 
 <style>
 
+
 html,body{
 
 margin:0;
-
 height:100%;
-
 font-family:sans-serif;
 
 }
@@ -33,6 +34,7 @@ height:100%;
 }
 
 
+
 #panel{
 
 position:absolute;
@@ -40,7 +42,6 @@ position:absolute;
 z-index:999;
 
 top:10px;
-
 left:10px;
 
 background:white;
@@ -59,7 +60,6 @@ width:300px;
 textarea{
 
 width:100%;
-
 height:70px;
 
 }
@@ -85,10 +85,10 @@ border:2px solid white;
 }
 
 
+
 </style>
 
 </head>
-
 
 
 <body>
@@ -100,13 +100,9 @@ border:2px solid white;
 <h3>🌍 QuakeEarth</h3>
 
 
-
 <textarea id="input"
-
 placeholder="2026/06/26 15:41 北緯35.8度 東経138.3度 2.6 10km">
-
 </textarea>
-
 
 
 <button onclick="addEarthquake()">
@@ -140,7 +136,6 @@ placeholder="2026/06/26 15:41 北緯35.8度 東経138.3度 2.6 10km">
 </button>
 
 
-
 </div>
 
 
@@ -150,7 +145,6 @@ placeholder="2026/06/26 15:41 北緯35.8度 東経138.3度 2.6 10km">
 
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
 
 
 <script>
@@ -179,15 +173,13 @@ maxZoom:18
 
 
 
-
 let pins=[];
 
 
 
-
-// =================
-// プレート境界
-// =================
+// ======================
+// プレート
+// ======================
 
 
 let plateLayer;
@@ -214,31 +206,55 @@ data,
 
 style:{
 
+
 color:"purple",
 
-weight:4,
-
-dashArray:"10,10"
+weight:4
 
 },
 
 
-onEachFeature:function(f,l){
 
-l.bindPopup(
+onEachFeature:function(feature,layer){
 
-"プレート境界<br>"+
 
-f.properties.name
+let p =
+feature.properties;
+
+
+
+layer.bindPopup(
+
+`
+
+<h3>${p.name}</h3>
+
+種類：
+${p.type}
+
+<br>
+
+プレートA：
+${p.plateA}
+
+<br>
+
+プレートB：
+${p.plateB}
+
+`
 
 );
+
 
 }
 
 
+
 }
 
 );
+
 
 
 });
@@ -283,9 +299,9 @@ plateVisible=true;
 
 
 
-// =================
+// ======================
 // 活断層
-// =================
+// ======================
 
 
 let faultLayer;
@@ -301,7 +317,7 @@ fetch("data/faults.json")
 .then(data=>{
 
 
-faultLayer =
+faultLayer=
 
 L.geoJSON(
 
@@ -312,6 +328,7 @@ data,
 
 style:{
 
+
 color:"red",
 
 weight:3
@@ -319,15 +336,30 @@ weight:3
 },
 
 
-onEachFeature:function(f,l){
 
-l.bindPopup(
+onEachFeature:function(feature,layer){
 
-"活断層<br>"+
 
-f.properties.name
+let p=
+feature.properties;
+
+
+layer.bindPopup(
+
+`
+
+<h3>${p.name}</h3>
+
+活断層
+
+<br>
+
+${p.description || ""}
+
+`
 
 );
+
 
 }
 
@@ -379,34 +411,22 @@ faultVisible=true;
 
 
 
-// =================
+// ======================
 // 地震ピン
-// =================
+// ======================
 
 
 
-function getMagnitudeColor(mag){
+function getColor(m){
 
 
-if(mag>=7){
-
-return "red";
-
-}
+if(m>=7)return "red";
 
 
-if(mag>=5){
-
-return "orange";
-
-}
+if(m>=5)return "orange";
 
 
-if(mag>=3){
-
-return "yellow";
-
-}
+if(m>=3)return "yellow";
 
 
 return "green";
@@ -417,23 +437,19 @@ return "green";
 
 
 
-
-function getPinSize(mag){
+function getSize(m){
 
 
 return Math.max(
 
 12,
 
-mag*4
+m*4
 
 );
 
 
 }
-
-
-
 
 
 
@@ -449,9 +465,7 @@ document.getElementById("input")
 
 
 
-let a=
-
-text.split(/\s+/);
+let a=text.split(/\s+/);
 
 
 
@@ -465,9 +479,7 @@ return;
 
 
 
-let date=
-
-a[0]+" "+a[1];
+let date=a[0]+" "+a[1];
 
 
 
@@ -476,9 +488,7 @@ let lat=
 Number(
 
 a[2]
-
 .replace("北緯","")
-
 .replace("度","")
 
 );
@@ -490,9 +500,7 @@ let lon=
 Number(
 
 a[3]
-
 .replace("東経","")
-
 .replace("度","")
 
 );
@@ -507,25 +515,15 @@ Number(a[4]);
 
 let depth=
 
-a[5]
-
-.replace("km","");
+a[5].replace("km","");
 
 
 
-
-
-let size=
-
-getPinSize(mag);
+let size=getSize(mag);
 
 
 
-let color=
-
-getMagnitudeColor(mag);
-
-
+let color=getColor(mag);
 
 
 
@@ -557,18 +555,10 @@ border-radius:50%;
 
 iconSize:[size,size],
 
-
-iconAnchor:[
-
-size/2,
-
-size/2
-
-]
+iconAnchor:[size/2,size/2]
 
 
 });
-
 
 
 
@@ -593,7 +583,6 @@ icon:icon
 
 
 
-
 let index=pins.length;
 
 
@@ -604,24 +593,17 @@ marker.bindPopup(
 
 <h3>${date}</h3>
 
-
 M ${mag}
 
-
 <br>
 
-
-深さ ${depth}km
-
+深さ ${depth} km
 
 <br>
-
 
 北緯 ${lat}
 
-
 <br>
-
 
 東経 ${lon}
 
@@ -642,8 +624,6 @@ M ${mag}
 
 
 
-
-
 pins.push(marker);
 
 
@@ -658,15 +638,10 @@ map.setView(
 
 
 
-
-
-// 入力消去
-
 document.getElementById("input").value="";
 
 
 }
-
 
 
 
@@ -684,7 +659,6 @@ pins[i]=null;
 
 
 }
-
 
 }
 
@@ -715,7 +689,6 @@ pins=[];
 
 
 </script>
-
 
 
 </body>
