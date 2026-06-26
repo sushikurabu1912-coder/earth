@@ -8,44 +8,30 @@
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-
 <title>QuakeEarth</title>
-
 
 <link rel="stylesheet"
 href="https://unpkg.com/leaflet/dist/leaflet.css">
 
-
 <style>
 
-
 html,body{
-
 margin:0;
-
 height:100%;
-
 font-family:sans-serif;
-
 }
-
 
 #map{
-
 height:100%;
-
 }
-
 
 
 #panel{
 
 position:absolute;
-
 z-index:999;
 
 top:10px;
-
 left:10px;
 
 background:white;
@@ -61,76 +47,54 @@ width:300px;
 }
 
 
-
 textarea{
 
 width:100%;
-
 height:70px;
 
 }
 
 
-
 button{
 
 width:100%;
-
 padding:8px;
-
 margin-top:5px;
 
 }
 
 
-
 .eq-pin{
 
 border-radius:50%;
-
 border:2px solid white;
 
 }
 
 
-
-/* 凡例 */
-
 .legend{
-
 
 position:absolute;
 
 z-index:999;
 
-
 right:10px;
 
 bottom:10px;
 
-
 background:white;
-
 
 padding:10px;
 
-
 border-radius:10px;
-
 
 box-shadow:0 0 8px #555;
 
-
-font-size:14px;
-
-
 }
-
 
 </style>
 
 </head>
-
 
 
 <body>
@@ -142,54 +106,36 @@ font-size:14px;
 <h3>🌍 QuakeEarth</h3>
 
 
-
 <textarea id="input"
-
 placeholder="2026/06/26 15:41 北緯35.8度 東経138.3度 2.6 10km">
-
 </textarea>
 
 
-
 <button onclick="addEarthquake()">
-
 地震追加
-
 </button>
-
 
 
 <button onclick="togglePlate()">
-
 プレート ON/OFF
-
 </button>
-
 
 
 <button onclick="toggleFault()">
-
 活断層 ON/OFF
-
 </button>
-
 
 
 <button onclick="deleteAll()">
-
 地震 全削除
-
 </button>
-
 
 
 </div>
 
 
 
-
 <div class="legend">
-
 
 <b>地震規模</b><br>
 
@@ -201,9 +147,7 @@ placeholder="2026/06/26 15:41 北緯35.8度 東経138.3度 2.6 10km">
 
 🔴 M7以上
 
-
 </div>
-
 
 
 
@@ -211,19 +155,41 @@ placeholder="2026/06/26 15:41 北緯35.8度 東経138.3度 2.6 10km">
 
 
 
-
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
 
 
 
 <script>
 
 
-const map =
+const map = L.map("map",{
 
 
-L.map("map")
+// 横ループ停止
+
+worldCopyJump:false,
+
+
+// ダブルクリックズーム停止
+
+doubleClickZoom:false,
+
+
+// 世界端停止
+
+maxBounds:[
+
+[-85,-180],
+
+[85,180]
+
+],
+
+
+maxBoundsViscosity:1.0
+
+
+})
 
 
 .setView([36,138],5);
@@ -234,16 +200,30 @@ L.map("map")
 
 L.tileLayer(
 
+"https://tile.openstreetmap.org/{z}/{x}/{y}.png",
 
-"https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+{
 
+
+noWrap:true,
+
+
+bounds:[
+
+[-85,-180],
+
+[85,180]
+
+],
+
+
+maxZoom:18
+
+}
 
 )
 
-
 .addTo(map);
-
-
 
 
 
@@ -254,132 +234,74 @@ let pins=[];
 
 
 
-// ======================
+// ==================
 // プレート
-// ======================
+// ==================
 
 
 let plateLayer=null;
 
-
 let plateVisible=false;
-
 
 
 
 fetch("data/plates.json")
 
 
-.then(r=>{
-
-
-if(!r.ok)
-
-throw new Error();
-
-
-return r.json();
-
-
-})
+.then(r=>r.json())
 
 
 .then(data=>{
 
 
-
-plateLayer =
-
-
-L.geoJSON(
-
+plateLayer=L.geoJSON(
 
 data,
-
 
 {
 
 
 style:{
 
-
 color:"purple",
-
 
 weight:2,
 
-
 fillColor:"#8844aa",
 
-
 fillOpacity:0.15
-
 
 },
 
 
+onEachFeature:function(f,l){
 
 
-
-onEachFeature:function(feature,layer){
-
+let p=f.properties;
 
 
-let p=feature.properties;
-
-
-
-layer.bindPopup(
-
-
+l.bindPopup(
 
 `
 
 <h3>${p.name}</h3>
 
-
 英名：
-
 ${p.english}
-
 
 <br>
 
-
 種類：
-
 ${p.type}
-
 
 `
 
-
-
 );
-
 
 
 }
 
-
 }
-
-
-
-);
-
-
-
-})
-
-
-
-.catch(()=>{
-
-
-console.log(
-
-"plates.json 読込失敗"
 
 );
 
@@ -390,40 +312,25 @@ console.log(
 
 
 
-
-
-
 function togglePlate(){
-
 
 
 if(!plateLayer){
 
-
-alert(
-
-"プレートJSONを読み込めません"
-
-);
-
+alert("plates.json未読込");
 
 return;
 
-
 }
-
 
 
 if(plateVisible){
 
 
-
 map.removeLayer(plateLayer);
 
 
-
 plateVisible=false;
-
 
 
 }
@@ -431,38 +338,30 @@ plateVisible=false;
 else{
 
 
-
 plateLayer.addTo(map);
-
 
 
 plateVisible=true;
 
 
+}
 
 }
 
 
-}
 
 
 
 
 
-
-
-
-// ======================
+// ==================
 // 活断層
-// ======================
-
+// ==================
 
 
 let faultLayer=null;
 
-
 let faultVisible=false;
-
 
 
 
@@ -475,69 +374,39 @@ fetch("data/faults.json")
 .then(data=>{
 
 
-faultLayer =
-
-
-
-L.geoJSON(
-
+faultLayer=L.geoJSON(
 
 data,
-
 
 {
 
 
 style:{
 
-
 color:"red",
-
 
 weight:3
 
-
 },
-
-
-
 
 
 onEachFeature:function(f,l){
 
 
-
 l.bindPopup(
 
+"活断層<br>"+
 
-`
-
-<h3>
-
-${f.properties.name}
-
-</h3>
-
-
-活断層
-
-
-`
+f.properties.name
 
 );
 
 
-
 }
 
-
-
 }
-
-
 
 );
-
 
 
 });
@@ -546,27 +415,20 @@ ${f.properties.name}
 
 
 
-
 function toggleFault(){
 
 
-
-if(!faultLayer)
-
-return;
+if(!faultLayer)return;
 
 
 
 if(faultVisible){
 
 
-
 map.removeLayer(faultLayer);
 
 
-
 faultVisible=false;
-
 
 
 }
@@ -574,55 +436,37 @@ faultVisible=false;
 else{
 
 
-
 faultLayer.addTo(map);
-
 
 
 faultVisible=true;
 
 
+}
 
 }
 
 
 
-}
 
 
 
 
-
-
-
-
-
-// ======================
-// 地震ピン
-// ======================
-
+// ==================
+// 地震
+// ==================
 
 
 function magColor(m){
 
 
-
-if(m>=7)
-
-return "red";
+if(m>=7)return "red";
 
 
-
-if(m>=5)
-
-return "orange";
+if(m>=5)return "orange";
 
 
-
-if(m>=3)
-
-return "yellow";
-
+if(m>=3)return "yellow";
 
 
 return "green";
@@ -633,10 +477,7 @@ return "green";
 
 
 
-
-
 function pinSize(m){
-
 
 
 return Math.max(
@@ -648,9 +489,7 @@ m*4
 );
 
 
-
 }
-
 
 
 
@@ -660,16 +499,11 @@ m*4
 function addEarthquake(){
 
 
-
-let text =
-
+let text=
 
 document.getElementById("input")
 
-
 .value.trim();
-
-
 
 
 
@@ -677,25 +511,13 @@ let a=text.split(/\s+/);
 
 
 
-
-
 if(a.length<6){
 
-
-alert(
-
-"入力形式エラー"
-
-);
-
+alert("入力形式エラー");
 
 return;
 
-
 }
-
-
-
 
 
 
@@ -703,11 +525,7 @@ let date=a[0]+" "+a[1];
 
 
 
-
-
 let lat=
-
-
 
 Number(
 
@@ -721,12 +539,7 @@ a[2]
 
 
 
-
-
-
 let lon=
-
-
 
 Number(
 
@@ -740,23 +553,11 @@ a[3]
 
 
 
-
-
-
 let mag=Number(a[4]);
 
 
 
-
-
-let depth=
-
-a[5].replace("km","");
-
-
-
-
-
+let depth=a[5].replace("km","");
 
 
 
@@ -764,55 +565,32 @@ let s=pinSize(mag);
 
 
 
-
-
-let icon=
-
-
-
-L.divIcon({
-
-
+let icon=L.divIcon({
 
 className:"eq-pin",
 
-
-
 html:
-
 
 `
 
 <div style="
 
-
 width:${s}px;
-
 
 height:${s}px;
 
-
 background:${magColor(mag)};
-
 
 border-radius:50%;
 
-
 "></div>
-
-
 
 `,
 
 
-
 iconSize:[s,s],
 
-
-
 iconAnchor:[s/2,s/2]
-
-
 
 });
 
@@ -820,20 +598,9 @@ iconAnchor:[s/2,s/2]
 
 
 
-
-
-
-let marker=
-
-
-
-L.marker(
-
-
+let marker=L.marker(
 
 [lat,lon],
-
-
 
 {
 
@@ -841,15 +608,9 @@ icon:icon
 
 }
 
-
-
 )
 
-
 .addTo(map);
-
-
-
 
 
 
@@ -859,52 +620,35 @@ let id=pins.length;
 
 
 
-
-
 marker.bindPopup(
-
-
 
 `
 
 <h3>${date}</h3>
 
-
 M ${mag}
 
-
 <br>
-
 
 深さ ${depth}km
 
-
 <br>
-
 
 北緯 ${lat}
 
-
 <br>
 
-
 東経 ${lon}
-
 
 
 <br><br>
 
 
-
 <button onclick="deletePin(${id})">
 
-
-この地震を削除
-
+削除
 
 </button>
-
-
 
 `
 
@@ -916,16 +660,7 @@ pins.push(marker);
 
 
 
-
-
-
-
-// 自動ズームなし
-
-
-
 document.getElementById("input").value="";
-
 
 
 }
@@ -934,10 +669,7 @@ document.getElementById("input").value="";
 
 
 
-
-
 function deletePin(i){
-
 
 
 if(pins[i]){
@@ -952,12 +684,7 @@ pins[i]=null;
 }
 
 
-
 }
-
-
-
-
 
 
 
@@ -965,24 +692,18 @@ pins[i]=null;
 function deleteAll(){
 
 
-
 pins.forEach(p=>{
-
 
 
 if(p)
 
-
 map.removeLayer(p);
-
 
 
 });
 
 
-
 pins=[];
-
 
 
 }
@@ -990,7 +711,6 @@ pins=[];
 
 
 </script>
-
 
 
 </body>
