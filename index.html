@@ -13,25 +13,35 @@ content="width=device-width,initial-scale=1">
 <link rel="stylesheet"
 href="https://unpkg.com/leaflet/dist/leaflet.css">
 
+
 <style>
 
 html,body{
+
 margin:0;
+
 height:100%;
+
 font-family:sans-serif;
+
 }
 
+
 #map{
+
 height:100%;
+
 }
 
 
 #panel{
 
 position:absolute;
+
 z-index:999;
 
 top:10px;
+
 left:10px;
 
 background:white;
@@ -50,6 +60,7 @@ width:300px;
 textarea{
 
 width:100%;
+
 height:70px;
 
 }
@@ -58,7 +69,9 @@ height:70px;
 button{
 
 width:100%;
+
 padding:8px;
+
 margin-top:5px;
 
 }
@@ -67,6 +80,7 @@ margin-top:5px;
 .eq-pin{
 
 border-radius:50%;
+
 border:2px solid white;
 
 }
@@ -158,24 +172,25 @@ placeholder="2026/06/26 15:41 北緯35.8度 東経138.3度 2.6 10km">
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 
-
 <script>
 
 
-const map = L.map("map",{
+// =======================
+// 地図設定
+// =======================
 
 
-// 横ループ停止
+const map=L.map("map",{
+
+crs:L.CRS.EPSG3857,
 
 worldCopyJump:false,
 
-
-// ダブルクリックズーム停止
-
 doubleClickZoom:false,
 
+minZoom:2,
 
-// 世界端停止
+maxZoom:18,
 
 maxBounds:[
 
@@ -185,12 +200,9 @@ maxBounds:[
 
 ],
 
-
 maxBoundsViscosity:1.0
 
-
 })
-
 
 .setView([36,138],5);
 
@@ -204,9 +216,9 @@ L.tileLayer(
 
 {
 
-
 noWrap:true,
 
+continuousWorld:false,
 
 bounds:[
 
@@ -215,7 +227,6 @@ bounds:[
 [85,180]
 
 ],
-
 
 maxZoom:18
 
@@ -234,9 +245,9 @@ let pins=[];
 
 
 
-// ==================
+// =======================
 // プレート
-// ==================
+// =======================
 
 
 let plateLayer=null;
@@ -247,9 +258,7 @@ let plateVisible=false;
 
 fetch("data/plates.json")
 
-
 .then(r=>r.json())
-
 
 .then(data=>{
 
@@ -259,7 +268,6 @@ plateLayer=L.geoJSON(
 data,
 
 {
-
 
 style:{
 
@@ -324,6 +332,7 @@ return;
 }
 
 
+
 if(plateVisible){
 
 
@@ -346,6 +355,7 @@ plateVisible=true;
 
 }
 
+
 }
 
 
@@ -353,10 +363,9 @@ plateVisible=true;
 
 
 
-
-// ==================
+// =======================
 // 活断層
-// ==================
+// =======================
 
 
 let faultLayer=null;
@@ -367,9 +376,7 @@ let faultVisible=false;
 
 fetch("data/faults.json")
 
-
 .then(r=>r.json())
-
 
 .then(data=>{
 
@@ -379,7 +386,6 @@ faultLayer=L.geoJSON(
 data,
 
 {
-
 
 style:{
 
@@ -395,9 +401,13 @@ onEachFeature:function(f,l){
 
 l.bindPopup(
 
-"活断層<br>"+
+`
 
-f.properties.name
+<h3>${f.properties.name}</h3>
+
+活断層
+
+`
 
 );
 
@@ -452,9 +462,10 @@ faultVisible=true;
 
 
 
-// ==================
-// 地震
-// ==================
+// =======================
+// 地震ピン
+// =======================
+
 
 
 function magColor(m){
@@ -477,6 +488,7 @@ return "green";
 
 
 
+
 function pinSize(m){
 
 
@@ -490,6 +502,7 @@ m*4
 
 
 }
+
 
 
 
@@ -553,15 +566,19 @@ a[3]
 
 
 
-let mag=Number(a[4]);
+let mag=
+
+Number(a[4]);
 
 
 
-let depth=a[5].replace("km","");
+let depth=
+
+a[5].replace("km","");
 
 
 
-let s=pinSize(mag);
+let size=pinSize(mag);
 
 
 
@@ -569,15 +586,16 @@ let icon=L.divIcon({
 
 className:"eq-pin",
 
+
 html:
 
 `
 
 <div style="
 
-width:${s}px;
+width:${size}px;
 
-height:${s}px;
+height:${size}px;
 
 background:${magColor(mag)};
 
@@ -588,9 +606,17 @@ border-radius:50%;
 `,
 
 
-iconSize:[s,s],
 
-iconAnchor:[s/2,s/2]
+iconSize:[size,size],
+
+
+iconAnchor:[
+
+size/2,
+
+size/2
+
+]
 
 });
 
@@ -640,9 +666,7 @@ M ${mag}
 
 東経 ${lon}
 
-
 <br><br>
-
 
 <button onclick="deletePin(${id})">
 
@@ -669,6 +693,8 @@ document.getElementById("input").value="";
 
 
 
+
+
 function deletePin(i){
 
 
@@ -683,7 +709,6 @@ pins[i]=null;
 
 }
 
-
 }
 
 
@@ -695,9 +720,11 @@ function deleteAll(){
 pins.forEach(p=>{
 
 
-if(p)
+if(p){
 
 map.removeLayer(p);
+
+}
 
 
 });
