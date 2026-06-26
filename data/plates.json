@@ -1,41 +1,183 @@
 {
-"type":"FeatureCollection",
-"features":[
-
-{
-"type":"Feature",
-"properties":{
-"name":"日本海溝"
-},
-"geometry":{
-"type":"LineString",
-"coordinates":[
-
-[145,40],
-[143,38],
-[142,36],
-[141,34]
-
-]
-}
-},
-
-{
-"type":"Feature",
-"properties":{
-"name":"南海トラフ"
-},
-"geometry":{
-"type":"LineString",
-"coordinates":[
-
-[136,34],
-[138,33],
-[140,32]
-
-]
-}
-}
-
-]
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Japan Trench",
+        "plateA": "Pacific Plate",
+        "plateB": "Okhotsk Plate",
+        "type": "Subduction"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [146.5, 43.5],
+          [145.5, 42.5],
+          [144.5, 41.5],
+          [143.8, 40.0],
+          [143.2, 38.5],
+          [142.5, 37.0],
+          [142.0, 35.5]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kuril Trench",
+        "plateA": "Pacific Plate",
+        "plateB": "Okhotsk Plate",
+        "type": "Subduction"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [156.0, 50.5],
+          [154.0, 48.5],
+          [151.5, 46.0],
+          [149.0, 44.0],
+          [147.0, 43.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Mariana Trench",
+        "plateA": "Pacific Plate",
+        "plateB": "Philippine Sea Plate",
+        "type": "Subduction"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [146.0, 24.5],
+          [145.0, 21.0],
+          [144.0, 18.0],
+          [143.0, 15.0],
+          [142.0, 12.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Peru–Chile Trench",
+        "plateA": "Nazca Plate",
+        "plateB": "South American Plate",
+        "type": "Subduction"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-81.0, 5.0],
+          [-79.0, -5.0],
+          [-77.5, -15.0],
+          [-75.5, -25.0],
+          [-74.0, -35.0],
+          [-73.0, -45.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Middle America Trench",
+        "plateA": "Cocos Plate",
+        "plateB": "North American Plate",
+        "type": "Subduction"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-106.0, 21.0],
+          [-103.0, 18.0],
+          [-99.0, 16.0],
+          [-95.0, 14.0],
+          [-91.0, 12.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "San Andreas Fault",
+        "plateA": "Pacific Plate",
+        "plateB": "North American Plate",
+        "type": "Transform"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-124.5, 40.5],
+          [-123.0, 38.0],
+          [-121.0, 36.0],
+          [-119.0, 34.5],
+          [-117.5, 33.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Mid-Atlantic Ridge",
+        "plateA": "North American Plate",
+        "plateB": "Eurasian Plate",
+        "type": "Divergent"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-30.0, 70.0],
+          [-28.0, 55.0],
+          [-26.0, 40.0],
+          [-24.0, 20.0],
+          [-20.0, 0.0],
+          [-15.0, -20.0],
+          [-10.0, -40.0],
+          [-5.0, -55.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "East Pacific Rise",
+        "plateA": "Pacific Plate",
+        "plateB": "Nazca Plate",
+        "type": "Divergent"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-112.0, 30.0],
+          [-110.0, 15.0],
+          [-108.0, 0.0],
+          [-106.0, -15.0],
+          [-104.0, -30.0],
+          [-102.0, -45.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Himalayan Collision Zone",
+        "plateA": "Indian Plate",
+        "plateB": "Eurasian Plate",
+        "type": "Collision"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [72.0, 35.0],
+          [78.0, 33.5],
+          [84.0, 30.5],
+          [90.0, 29.5],
+          [96.0, 28.5]
+        ]
+      }
+    }
+  ]
 }
