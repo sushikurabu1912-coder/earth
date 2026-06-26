@@ -18,10 +18,13 @@ href="https://unpkg.com/leaflet/dist/leaflet.css">
 
 <style>
 
+
 html,body{
 
 margin:0;
+
 height:100%;
+
 font-family:sans-serif;
 
 }
@@ -44,7 +47,6 @@ z-index:999;
 top:10px;
 
 left:10px;
-
 
 background:white;
 
@@ -90,9 +92,45 @@ border:2px solid white;
 
 }
 
+
+
+/* 凡例 */
+
+.legend{
+
+
+position:absolute;
+
+z-index:999;
+
+
+right:10px;
+
+bottom:10px;
+
+
+background:white;
+
+
+padding:10px;
+
+
+border-radius:10px;
+
+
+box-shadow:0 0 8px #555;
+
+
+font-size:14px;
+
+
+}
+
+
 </style>
 
 </head>
+
 
 
 <body>
@@ -104,32 +142,68 @@ border:2px solid white;
 <h3>🌍 QuakeEarth</h3>
 
 
+
 <textarea id="input"
+
 placeholder="2026/06/26 15:41 北緯35.8度 東経138.3度 2.6 10km">
+
 </textarea>
 
 
+
 <button onclick="addEarthquake()">
+
 地震追加
+
 </button>
+
 
 
 <button onclick="togglePlate()">
+
 プレート ON/OFF
+
 </button>
+
 
 
 <button onclick="toggleFault()">
+
 活断層 ON/OFF
+
 </button>
+
 
 
 <button onclick="deleteAll()">
+
 地震 全削除
+
 </button>
 
 
+
 </div>
+
+
+
+
+<div class="legend">
+
+
+<b>地震規模</b><br>
+
+🟢 M0〜2.9<br>
+
+🟡 M3〜4.9<br>
+
+🟠 M5〜6.9<br>
+
+🔴 M7以上
+
+
+</div>
+
 
 
 
@@ -137,7 +211,9 @@ placeholder="2026/06/26 15:41 北緯35.8度 東経138.3度 2.6 10km">
 
 
 
+
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 
 
 
@@ -145,18 +221,30 @@ placeholder="2026/06/26 15:41 北緯35.8度 東経138.3度 2.6 10km">
 
 
 const map =
+
+
 L.map("map")
+
+
 .setView([36,138],5);
+
+
 
 
 
 L.tileLayer(
 
+
 "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+
 
 )
 
+
 .addTo(map);
+
+
+
 
 
 
@@ -164,74 +252,111 @@ let pins=[];
 
 
 
-// =====================
+
+
+// ======================
 // プレート
-// =====================
+// ======================
 
 
 let plateLayer=null;
+
 
 let plateVisible=false;
 
 
 
+
 fetch("data/plates.json")
 
-.then(r=>r.json())
+
+.then(r=>{
+
+
+if(!r.ok)
+
+throw new Error();
+
+
+return r.json();
+
+
+})
+
 
 .then(data=>{
 
 
+
 plateLayer =
+
 
 L.geoJSON(
 
+
 data,
+
 
 {
 
 
-style:function(feature){
+style:{
 
-
-return {
 
 color:"purple",
 
+
 weight:2,
+
 
 fillColor:"#8844aa",
 
-fillOpacity:0.15
 
-};
+fillOpacity:0.15
 
 
 },
 
 
 
+
+
 onEachFeature:function(feature,layer){
+
 
 
 let p=feature.properties;
 
 
+
 layer.bindPopup(
+
+
 
 `
 
 <h3>${p.name}</h3>
 
-英名：${p.english}
+
+英名：
+
+${p.english}
+
 
 <br>
 
-種類：${p.type}
+
+種類：
+
+${p.type}
+
 
 `
 
+
+
 );
+
 
 
 }
@@ -239,16 +364,30 @@ layer.bindPopup(
 
 }
 
+
+
 );
+
 
 
 })
 
-.catch(e=>{
 
-console.log("plates.json error",e);
+
+.catch(()=>{
+
+
+console.log(
+
+"plates.json 読込失敗"
+
+);
+
 
 });
+
+
+
 
 
 
@@ -257,11 +396,19 @@ console.log("plates.json error",e);
 function togglePlate(){
 
 
+
 if(!plateLayer){
 
-alert("プレートデータ読込中");
+
+alert(
+
+"プレートJSONを読み込めません"
+
+);
+
 
 return;
+
 
 }
 
@@ -270,10 +417,13 @@ return;
 if(plateVisible){
 
 
+
 map.removeLayer(plateLayer);
 
 
+
 plateVisible=false;
+
 
 
 }
@@ -281,80 +431,113 @@ plateVisible=false;
 else{
 
 
+
 plateLayer.addTo(map);
+
 
 
 plateVisible=true;
 
 
-}
-
 
 }
 
 
+}
 
 
 
-// =====================
+
+
+
+
+
+// ======================
 // 活断層
-// =====================
+// ======================
+
 
 
 let faultLayer=null;
+
 
 let faultVisible=false;
 
 
 
+
 fetch("data/faults.json")
 
+
 .then(r=>r.json())
+
 
 .then(data=>{
 
 
-faultLayer=
+faultLayer =
+
+
 
 L.geoJSON(
 
+
 data,
+
 
 {
 
 
 style:{
 
+
 color:"red",
 
+
 weight:3
+
 
 },
 
 
 
-onEachFeature:function(feature,layer){
 
 
-layer.bindPopup(
+onEachFeature:function(f,l){
+
+
+
+l.bindPopup(
+
 
 `
 
-<h3>${feature.properties.name}</h3>
+<h3>
+
+${f.properties.name}
+
+</h3>
+
 
 活断層
 
+
 `
 
 );
 
 
+
 }
 
 
+
 }
+
+
 
 );
+
 
 
 });
@@ -367,17 +550,23 @@ layer.bindPopup(
 function toggleFault(){
 
 
-if(!faultLayer)return;
+
+if(!faultLayer)
+
+return;
 
 
 
 if(faultVisible){
 
 
+
 map.removeLayer(faultLayer);
 
 
+
 faultVisible=false;
+
 
 
 }
@@ -385,38 +574,55 @@ faultVisible=false;
 else{
 
 
+
 faultLayer.addTo(map);
+
 
 
 faultVisible=true;
 
 
-}
-
 
 }
 
 
 
+}
 
 
 
 
-// =====================
-// 地震
-// =====================
+
+
+
+
+
+// ======================
+// 地震ピン
+// ======================
+
 
 
 function magColor(m){
 
 
-if(m>=7)return "red";
+
+if(m>=7)
+
+return "red";
 
 
-if(m>=5)return "orange";
+
+if(m>=5)
+
+return "orange";
 
 
-if(m>=3)return "yellow";
+
+if(m>=3)
+
+return "yellow";
+
 
 
 return "green";
@@ -428,7 +634,9 @@ return "green";
 
 
 
+
 function pinSize(m){
+
 
 
 return Math.max(
@@ -438,6 +646,7 @@ return Math.max(
 m*4
 
 );
+
 
 
 }
@@ -452,25 +661,41 @@ function addEarthquake(){
 
 
 
-let t=
+let text =
+
 
 document.getElementById("input")
+
 
 .value.trim();
 
 
 
-let a=t.split(/\s+/);
+
+
+let a=text.split(/\s+/);
+
+
 
 
 
 if(a.length<6){
 
-alert("入力形式エラー");
+
+alert(
+
+"入力形式エラー"
+
+);
+
 
 return;
 
+
 }
+
+
+
 
 
 
@@ -478,7 +703,11 @@ let date=a[0]+" "+a[1];
 
 
 
+
+
 let lat=
+
+
 
 Number(
 
@@ -492,7 +721,12 @@ a[2]
 
 
 
+
+
+
 let lon=
+
+
 
 Number(
 
@@ -506,9 +740,12 @@ a[3]
 
 
 
-let mag=
 
-Number(a[4]);
+
+
+let mag=Number(a[4]);
+
+
 
 
 
@@ -518,41 +755,64 @@ a[5].replace("km","");
 
 
 
+
+
+
+
+
 let s=pinSize(mag);
+
+
 
 
 
 let icon=
 
+
+
 L.divIcon({
+
+
 
 className:"eq-pin",
 
 
+
 html:
+
 
 `
 
 <div style="
 
+
 width:${s}px;
+
 
 height:${s}px;
 
+
 background:${magColor(mag)};
+
 
 border-radius:50%;
 
-">
 
-</div>
+"></div>
+
+
 
 `,
 
 
+
 iconSize:[s,s],
 
+
+
 iconAnchor:[s/2,s/2]
+
+
 
 });
 
@@ -560,11 +820,20 @@ iconAnchor:[s/2,s/2]
 
 
 
+
+
+
 let marker=
+
+
 
 L.marker(
 
+
+
 [lat,lon],
+
+
 
 {
 
@@ -572,9 +841,15 @@ icon:icon
 
 }
 
+
+
 )
 
+
 .addTo(map);
+
+
+
 
 
 
@@ -584,35 +859,51 @@ let id=pins.length;
 
 
 
+
+
 marker.bindPopup(
+
+
 
 `
 
 <h3>${date}</h3>
 
+
 M ${mag}
 
+
 <br>
+
 
 深さ ${depth}km
 
+
 <br>
+
 
 北緯 ${lat}
 
+
 <br>
 
+
 東経 ${lon}
+
 
 
 <br><br>
 
 
+
 <button onclick="deletePin(${id})">
+
 
 この地震を削除
 
+
 </button>
+
 
 
 `
@@ -625,10 +916,16 @@ pins.push(marker);
 
 
 
-// 自動移動なし
+
+
+
+
+// 自動ズームなし
+
 
 
 document.getElementById("input").value="";
+
 
 
 }
@@ -638,7 +935,9 @@ document.getElementById("input").value="";
 
 
 
+
 function deletePin(i){
+
 
 
 if(pins[i]){
@@ -653,7 +952,11 @@ pins[i]=null;
 }
 
 
+
 }
+
+
+
 
 
 
@@ -662,16 +965,24 @@ pins[i]=null;
 function deleteAll(){
 
 
+
 pins.forEach(p=>{
+
+
 
 if(p)
 
+
 map.removeLayer(p);
+
+
 
 });
 
 
+
 pins=[];
+
 
 
 }
@@ -679,6 +990,7 @@ pins=[];
 
 
 </script>
+
 
 
 </body>
