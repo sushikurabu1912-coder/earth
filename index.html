@@ -246,9 +246,8 @@ let pins=[];
 
 
 // =======================
-// プレート
+// プレート境界
 // =======================
-
 
 let plateLayer=null;
 
@@ -269,37 +268,89 @@ data,
 
 {
 
-style:{
 
-color:"purple",
+style:function(feature){
 
-weight:2,
 
-fillColor:"#8844aa",
+let type=
 
-fillOpacity:0.15
+feature.properties.type;
+
+
+
+let color="purple";
+
+
+
+if(type.includes("Transform")){
+
+color="red";
+
+}
+
+
+if(type.includes("Divergent")){
+
+color="blue";
+
+}
+
+
+if(type.includes("Collision")){
+
+color="orange";
+
+}
+
+
+
+return {
+
+color:color,
+
+weight:4,
+
+opacity:0.9
+
+};
+
 
 },
 
 
-onEachFeature:function(f,l){
 
 
-let p=f.properties;
+
+onEachFeature:function(feature,layer){
 
 
-l.bindPopup(
+
+let p=feature.properties;
+
+
+
+layer.bindPopup(
 
 `
 
 <h3>${p.name}</h3>
 
-英名：
-${p.english}
+<br>
+
+プレートA：
+
+${p.plateA}
 
 <br>
 
-種類：
+プレートB：
+
+${p.plateB}
+
+<br>
+
+境界タイプ：
+
 ${p.type}
 
 `
@@ -307,14 +358,25 @@ ${p.type}
 );
 
 
-}
 
 }
+
+
+
+}
+
 
 );
 
 
+})
+
+.catch(e=>{
+
+console.log("plates.json error",e);
+
 });
+
 
 
 
@@ -325,7 +387,7 @@ function togglePlate(){
 
 if(!plateLayer){
 
-alert("plates.json未読込");
+alert("plates.jsonを確認してください");
 
 return;
 
